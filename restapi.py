@@ -34,7 +34,7 @@ def removeBlockedIP():
     return jsonify({'output': op}), 200
 
 
-# http://192.168.185.52:5000/addInstance?filter=<filter_string>&tag=<tag>
+# curl -d filter="--ip.proto=TCP --if=d03" -d tag="out-tcp" -X POST http://192.168.185.71:5000/listInstance
 # iptables -A INPUT -s IP-ADDRESS -j DROP
 @app.route('/addInstance', methods=['POST'])
 def addInstance():
