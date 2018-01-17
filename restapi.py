@@ -36,13 +36,13 @@ def removeBlockedIP():
 
 # http://192.168.185.52:5000/addInstance?filter=<filter_string>&tag=<tag>
 # iptables -A INPUT -s IP-ADDRESS -j DROP
-@app.route('/addInstance')
+@app.route('/addInstance', methods=['POST'])
 def addInstance():
-    filter = request.args.get('filter')
-    tag = request.args.get('tag')
+    filter = request.form.get('filter')
+    tag = request.form.get('tag')
     if not filter or not tag:
-        return jsonify({'error': 'Could not find filter or tag . URL format -  /addInstance?filter=<filter_string>&tag=<tag>'}), 500
-    command = 'sudo bitrate -i ens4 01::71 01::72 --ip.proto={} --format=influx --influx-user="admin" --influx-pwd="admin" --influx-tag="{}" --influx-url="http://localhost:8086/write?db=anm" >/dev/null 2>&1 &'.format(filter, tag)
+        return jsonify({'error': 'Could not find ip. URL format -  /addInstance?filter=<filter_string>&tag=<tag>'}), 500
+    command = 'sudo bitrate -i ens4 01::71 01::72 {} --format=influx --influx-user="admin" --influx-pwd="admin" --influx-tag="{}" --influx-url="http://localhost:8086/write?db=anm" >/dev/null 2>&1 &'.format(filter, tag)
     op = get_console(command)
     return jsonify({'output': op}), 200
 
