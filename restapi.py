@@ -22,6 +22,14 @@ def get_console(command):
             lines.append(line.strip())
     return lines
 
+#192.168.185.52:5000/listIP
+@app.route('/listIP')
+def listIP():
+    op = get_console('sudo iptables -S')
+    return jsonify({'output': op}), 200
+
+
+
 
 # http://192.168.185.52:5000/removeBlockedIP?ip=<ipaddress_to_unblock>
 # iptables -A INPUT -s IP-ADDRESS -j DROP
