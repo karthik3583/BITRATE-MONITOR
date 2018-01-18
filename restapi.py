@@ -29,16 +29,27 @@ def listIP():
     return jsonify({'output': op}), 200
 
 
+# http://192.168.185.52:5000/addIP?ip=<ipaddress_to_block>
+# iptables -A INPUT -s IP-ADDRESS -j DROP
+@app.route('/addIP')
+def addIP():
+    ip = request.args.get('ip')
+    if not ip:
+        return jsonify({'error': 'Could not find ip. URL format removeBlockedIP?ip=<ipaddress_to_block>'}), 500
+    op = get_console('iptables -A INPUT -s {} -j DROP'.format(ip))
+    return jsonify({'output': op}), 200
+
+
 
 
 # http://192.168.185.52:5000/removeBlockedIP?ip=<ipaddress_to_unblock>
-# iptables -A INPUT -s IP-ADDRESS -j DROP
+# iptables -D INPUT -s IP-ADDRESS -j DROP
 @app.route('/removeBlockedIP')
 def removeBlockedIP():
     ip = request.args.get('ip')
     if not ip:
         return jsonify({'error': 'Could not find ip. URL format removeBlockedIP?ip=<ipaddress_to_unblock>'}), 500
-    op = get_console('iptables -A INPUT -s {} -j DROP'.format(ip))
+    op = get_console('iptables -D INPUT -s {} -j DROP'.format(ip))
     return jsonify({'output': op}), 200
 
 
@@ -61,7 +72,7 @@ def killInstance():
     id = request.args.get('id')
     if not id:
         return jsonify({'error': 'Could not find id. URL format - /killInstance?id=<id-seen in listInstance output>'}), 500
-    op = get_console('kill -9 {}'.format(id))
+    op = get_console('sudo kill -9 {}'.format(id))
     return jsonify({'output': op}), 200
 
 
